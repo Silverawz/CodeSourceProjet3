@@ -7,9 +7,11 @@ import org.apache.logging.log4j.Logger;
 
 
 public class Mode {
-	
+
+final private char REPLAY_ACTUAL_GAME_MODE = '1', GO_TO_MAIN_MENU = '2';
+final private char CHALLENGER = '1', DEFENSEUR = '2', DUEL = '3', EXIT = '4';
 private Challenger challenger; private Defenseur defenseur; private Instruction instruction; 
-private Scanner scanner; private Scanner scanner1; private Scanner scanner2;
+private Scanner scanner;
 private int tryNumber; // number of try
 private int modeDeJeuActuel; // game mode (1 = challenger, 2 = defenseur, 3 = duel)
 private boolean activationEssai = false; // if try are enable = true, if not = false
@@ -70,42 +72,63 @@ final static Logger logger = LogManager.getLogger(Mode.class);
 	//constructor without parameter = infinite try
 	public Mode() {
 		setActivationEssai(false);
+		setCombinaisonNumber(4); // default mode : combinaison size = 4
+		System.out.println("File XML not found or invalid, generating default configuration : Combinaison size = 4, Number of try = unlimited");
 	}
 
 	//constructor with parameter take from xml file
 	public Mode(String combinaisonNumber, String numberOfTry, String devMode) {
+		if(!(combinaisonNumber.isEmpty() || numberOfTry.isEmpty() || devMode.isEmpty())) {
+			if(isNumeric(combinaisonNumber) && isNumeric(numberOfTry) && isNumeric(devMode)) {
+				int combinaisonNumberInt = Integer.parseInt(combinaisonNumber);
+				int numberOfTryInt = Integer.parseInt(numberOfTry);
+				int devModeInt = Integer.parseInt(devMode);
+				if (combinaisonNumberInt == 0 || combinaisonNumberInt < 0) {
+					setCombinaisonNumber(4); //  combinaison size = 4
+				}
 
-		int a = Integer.parseInt(combinaisonNumber);
-		int b = Integer.parseInt(numberOfTry);
-		int c = Integer.parseInt(devMode);
+				else if (combinaisonNumberInt != 0 && combinaisonNumberInt > 0) {
+					setCombinaisonNumber(combinaisonNumberInt); //  combinaison size = a
+				}
 
-		if (a == 0 || a < 0) {
-			setCombinaisonNumber(4); // 4 numbers of combinaison set
+				if (numberOfTryInt != 0 && numberOfTryInt > 0) {
+					setActivationEssai(true); // try enable
+					setTryNumber(numberOfTryInt); // try number = b
+				}
+
+				else if (numberOfTryInt == 0 || numberOfTryInt< 0) { // try disable
+					setActivationEssai(false);
+				}
+
+				if (devModeInt == 1) { // dev mode true
+					setDevModeActivated(1);
+				}
+
+				else if (devModeInt == 0) { // dev mode false
+					setDevModeActivated(0);
+				}		
+			}
+			else {
+				System.out.println("Xml file error(s), default mode activated.");
+				logger.info("One parameter is incorrect, loading default mode");
+				new Mode();
+			}		
 		}
-
-		else if (a != 0 && a > 0) {
-			setCombinaisonNumber(a); // a numbers of combinaison set
+		else {
+			new Mode();
 		}
-
-		if (b != 0 && b > 0) {
-			setActivationEssai(true); // try enable
-			setTryNumber(b); // b number of try
-		}
-
-		else if (b == 0 || b < 0) { // try disable
-			setActivationEssai(false);
-		}
-
-		if (c == 1) { // dev mode true
-			setDevModeActivated(1);
-		}
-
-		else if (c == 0) { // dev mode false
-			setDevModeActivated(0);
-		}	
 	}
 
-
+	private static boolean isNumeric(String str) { 
+		  try {  
+		    Double.parseDouble(str);  
+		    return true;
+		  } catch(NumberFormatException e){ 
+			logger.info("The field " + str + " is not numeric");
+		    return false;  
+		  }  
+		}
+	
 	public int getTryNumber() {
 		return tryNumber;
 	}
@@ -118,17 +141,17 @@ final static Logger logger = LogManager.getLogger(Mode.class);
 	private void choiceReplayOrMainMenu() {
 		scanner = new Scanner(System.in);
 		for (int i = 0; i != 1; i += 0) {
-			char answer = scanner.next().charAt(0);
-			if (answer == '1') {
+			char answerPlayer = scanner.next().charAt(0);
+			if (answerPlayer == REPLAY_ACTUAL_GAME_MODE) {
 				functionRememberMode(getModeDeJeuActuel());
 				i++;
 			}
-			else if (answer == '2'){
+			else if (answerPlayer == GO_TO_MAIN_MENU){
 				instruction.getInstructionChoice();
 				choiceGameMode();
 				i++;
 			}
-			else { 
+			else { // wrong input
 				instruction.getInstructionRejouer();
 				logger.info("Input is not 1 or 2");
 			}
@@ -143,23 +166,23 @@ final static Logger logger = LogManager.getLogger(Mode.class);
 		instruction = new Instruction(getCombinaisonNumber()); 
 		for(int i = 0; i != 1; i += 0) {
 			char chiffreFinal = scanner.next().charAt(0);
-			if (chiffreFinal == '1'){
+			if (chiffreFinal == CHALLENGER){
 				instruction.getInstructionChallenger();
 				i++;
 				challengerMode();
 			}
-			else if (chiffreFinal == '2'){
+			else if (chiffreFinal == DEFENSEUR){
 				instruction.getInstructionDefenseur();
 				i++;
 				defenseurMode();	
 			}
-			else if (chiffreFinal == '3'){
+			else if (chiffreFinal == DUEL){
 				instruction.getInstructionDuel();
 				i++;
 				duelModeStart();
 				duelMode();
 			}
-			else if (chiffreFinal == '4') {
+			else if (chiffreFinal == EXIT) {
 				instruction.getInstructionEnd();
 				scanClosed();
 				break;
@@ -280,9 +303,10 @@ final static Logger logger = LogManager.getLogger(Mode.class);
 		setOnlyOnce(true); // if first attempt, ask to write the number, only once
 	}
 
+	//***1
 	//Duel part 1
 	private void firstPartOfDuel() {
-		scanner1 = new Scanner(System.in);
+		scanner = new Scanner(System.in);
 		challenger.getInitialisation(getDevModeActivated()); // check dev mode
 		if (getOnlyOnce() == false) { // show the last try if not first attempt
 			System.out.println("Your last tentative was : ");
@@ -297,7 +321,7 @@ final static Logger logger = LogManager.getLogger(Mode.class);
 		}
 		boolean a = false; // infinite loop to check the player input
 		while(a == false) { // stay false until player input is correct
-			String string = scanner1.nextLine(); // taking player input
+			String string = scanner.nextLine(); // taking player input
 			challenger.setNumberChoosed(string); // sending player input
 			a = challenger.getVerificationNumberChoosedConfirmed(); // change a = true if the player input is correct
 		}
@@ -306,13 +330,14 @@ final static Logger logger = LogManager.getLogger(Mode.class);
 		challenger.getVictoryTest(); // victory condition verification	
 	}
 
+	//***2
 	//Duel part 2
 	private void secondPartOfDuel() {
-		scanner2 = new Scanner(System.in);
+		scanner = new Scanner(System.in);
 		boolean a = false; // infinite loop to check the player input
 		while(a == false) { // stay false until player input is correct
 			defenseur.getShowNumber(); // show computer number proposal
-			String operationPlayer = scanner2.nextLine(); // taking player input (+,- or =)
+			String operationPlayer = scanner.nextLine(); // taking player input (+,- or =)
 			defenseur.setOperationPlayer(operationPlayer); // sending player input (+,- or =)
 			a = defenseur.getVerificationOperationChoosedConfirmed(); // change a = true if the player input is correct
 		}
@@ -334,14 +359,15 @@ final static Logger logger = LogManager.getLogger(Mode.class);
 		challenger.getVictoryTest(); // victory condition verification
 	}
 
+	//***1
 	//main instruction for defenseur mode
 	private void defenseurSettingLoopGame() {
-		scanner1 = new Scanner(System.in);
+		scanner = new Scanner(System.in);
 		defenseur.setVerificationOperationChoosedConfirmed(false);
 		boolean a = false;  // infinite loop for input verification
 		while(a == false) { // stay false untill input is correct
 			defenseur.getShowNumber();
-			String operationPlayer = scanner1.nextLine(); // taking player input (-, + or =)
+			String operationPlayer = scanner.nextLine(); // taking player input (-, + or =)
 			defenseur.setOperationPlayer(operationPlayer); // sending player input (-, + or =)
 			a = defenseur.getVerificationOperationChoosedConfirmed(); // change to true if player input is correct
 		}
@@ -371,12 +397,6 @@ final static Logger logger = LogManager.getLogger(Mode.class);
 	private void scanClosed() {
 		if (scanner != null) {
 			scanner.close();	
-		}
-		if (scanner1 != null) {
-			scanner1.close();
-		}
-		if (scanner2 != null) {
-			scanner2.close();
 		}
 	}
 }

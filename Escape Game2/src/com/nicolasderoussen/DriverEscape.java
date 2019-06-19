@@ -1,6 +1,8 @@
 package com.nicolasderoussen;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,12 +27,29 @@ import org.xml.sax.SAXException;
 
 public class DriverEscape {
 
+private Mode mode;
 private String numberofTry;
 private String combinaisonNumber;
 private String devMode;
 private DocumentBuilder documentBuilder;
+private boolean confirmValueXml;
 private Document document;
 final static Logger logger = LogManager.getLogger(DriverEscape.class);
+
+	public Mode getMode() {
+		return mode;
+	}
+	
+	public void setMode(Mode mode) {
+		this.mode = mode;
+	}
+	public boolean getConfirmValueXml() {
+		return confirmValueXml;
+	}
+	
+	public void setConfirmValueXml(boolean confirmValueXml) {
+		this.confirmValueXml = confirmValueXml;
+	}
 
 	public Document getDocument() {
 		return document;
@@ -73,55 +92,78 @@ final static Logger logger = LogManager.getLogger(DriverEscape.class);
 	}
 	
 	private void xmlFile(){
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-
-		try {
-			setDocumentBuilder(documentBuilderFactory.newDocumentBuilder());
-			logger.info("DocumentBuilder complete");
-		} catch (ParserConfigurationException e) {			
-			e.printStackTrace();
-			logger.error("Parsing exception" + e.getMessage());
+		InputStream fileExists = getClass().getResourceAsStream("Config_Escapegame.xml"); //verification if XML file exist
+		if(fileExists == null) { // xml not found
+			logger.info("File xml == null");
+			setConfirmValueXml(false);
 		}
-	
-		try {
-			setDocument(getDocumentBuilder().parse(getClass().getResourceAsStream("Config_Escapegame.xml")));
-			logger.info("Parsing of the XML file complete");
-		} catch (SAXException e) {
-			e.printStackTrace();
-			logger.error("XML is invalid + " + e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error("Input/Output Exception" + e.getMessage());
+		else { // xml found
+			logger.info("File xml loaded");
+			setConfirmValueXml(true);
 		}
-	
-		NodeList list = getDocument().getElementsByTagName("escapegame");
-	
-		for (int i = 0; i < list.getLength(); i++) {
-			Node node = list.item(i);
-	
-			if (node.getNodeType() == Node.ELEMENT_NODE) {			
-				Element element = (Element) node;
-				setNumberofTry(element.getElementsByTagName("NumberOfTry").item(0).getTextContent());
-				setCombinaisonNumber(element.getElementsByTagName("CombinaisonNumber").item(0).getTextContent());
-				setDevMode(element.getElementsByTagName("Devmode").item(0).getTextContent());
+		
+		if(getConfirmValueXml()) {
+			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+			try {
+				setDocumentBuilder(documentBuilderFactory.newDocumentBuilder());
+				logger.info("DocumentBuilder complete");
+			} catch (ParserConfigurationException e) {			
+				e.printStackTrace();
+				logger.error("Parsing exception" + e.getMessage());
 			}
+		
+			
+			try {
+				setDocument(getDocumentBuilder().parse(getClass().getResourceAsStream("Config_Escapegame.xml")));
+				logger.info("Parsing of the XML file complete");
+			} catch (SAXException e) {
+				e.printStackTrace();
+				logger.error("XML is invalid + " + e.getMessage());
+			} catch (IOException e) {
+				e.printStackTrace();
+				logger.error("Input/Output Exception" + e.getMessage());
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+				logger.error("InputStream cannot be null" + e.getMessage());
+			}
+		
+			NodeList list = getDocument().getElementsByTagName("escapegame");
+				
+			for (int i = 0; i < list.getLength(); i++) {
+				Node node = list.item(i);
+			
+				if (node.getNodeType() == Node.ELEMENT_NODE) {			
+					Element element = (Element) node;
+					setNumberofTry(element.getElementsByTagName("NumberOfTry").item(0).getTextContent());
+					setCombinaisonNumber(element.getElementsByTagName("CombinaisonNumber").item(0).getTextContent());
+					setDevMode(element.getElementsByTagName("Devmode").item(0).getTextContent());
+				}
+			}	
 		}
 	}
 	
 	private void start() {
 		Instruction instruction = new Instruction(0);
-		Mode mode = new Mode(getCombinaisonNumber(), getNumberofTry(), getDevMode()); 
+		if(getConfirmValueXml()) {
+			setMode(new Mode(getCombinaisonNumber(), getNumberofTry(), getDevMode())); 
+		}
+		else if (!getConfirmValueXml()) {
+			setMode(new Mode()); 
+		}
+		
 		instruction.getInstructionIntro();
+		
 		try {
 			Thread.sleep(150);
-			logger.info("Sleep for 0.15 sec is working");
+			logger.info("Sleep program 0.15sec");
 		} catch (InterruptedException e) {
 			System.err.println(e.getMessage().toString());
-			logger.error("Sleep for 0.15 sec is not working +" + e.getMessage());
+			logger.error("Sleep program 0.15sec +" + e.getMessage());
 		}
+		
 		instruction.getInstructionChoice();
-		mode.getChoiceGameMode();
-		mode.getScanClosed();	
+		getMode().getChoiceGameMode();
+		getMode().getScanClosed();	
 	}
 	
 	public static void main(String[] args) {

@@ -1,5 +1,8 @@
 		ESCAPE GAME
 
+
+Using JAVA jdk-11.0.2
+
 Configuration file is "ConfigEscape.xml" in EscapeGame(Nicolas DEROUSSEN).jar\com\nicolasderoussen\www
 <NumberOfTry> : Choose your maximum number of try here
 0 or less = try disable (unlimited try)
