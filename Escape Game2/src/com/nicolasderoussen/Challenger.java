@@ -7,13 +7,13 @@ import org.apache.logging.log4j.Logger;
 
 public class Challenger {
 
-private ArrayList <Integer> numberRdm = new ArrayList <Integer>(); //computer number
-private ArrayList <Integer> numberChoosed = new ArrayList <Integer>(); //player number
-private ArrayList <String> computerAnswer = new ArrayList <String>(); //computer answer with +,- or =
-private int tryNumber; private int combinaisonNumberofNumber;//setting with xml
-private boolean victory = false; //victory condition
-private boolean verificationNumberChoosedConfirmed = false;
-final static Logger logger = LogManager.getLogger(Challenger.class);
+	private ArrayList <Integer> numberRdm = new ArrayList <Integer>(); //computer number
+	private ArrayList <Integer> numberChoosed = new ArrayList <Integer>(); //player number
+	private ArrayList <String> computerAnswer = new ArrayList <String>(); //computer answer with +,- or =
+	private int tryNumber; private int combinaisonNumberofNumber;//setting with xml
+	private boolean victory = false; //victory condition
+	private boolean verificationNumberChoosedConfirmed = false;
+	final static Logger logger = LogManager.getLogger(Challenger.class);
 
 	//end the loop or not depending of player answer
 	public boolean getVerificationNumberChoosedConfirmed() {

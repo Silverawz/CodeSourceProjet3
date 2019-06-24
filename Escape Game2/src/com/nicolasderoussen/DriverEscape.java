@@ -1,6 +1,6 @@
 package com.nicolasderoussen;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,14 +27,14 @@ import org.xml.sax.SAXException;
 
 public class DriverEscape {
 
-private Mode mode;
-private String numberofTry;
-private String combinaisonNumber;
-private String devMode;
-private DocumentBuilder documentBuilder;
-private boolean confirmValueXml;
-private Document document;
-final static Logger logger = LogManager.getLogger(DriverEscape.class);
+	private Mode mode;
+	private String numberofTry;
+	private String combinaisonNumber;
+	private String devMode;
+	private DocumentBuilder documentBuilder;
+	private boolean confirmValueXml;
+	private Document document;
+	final static Logger logger = LogManager.getLogger(DriverEscape.class);
 
 	public Mode getMode() {
 		return mode;
@@ -43,6 +43,7 @@ final static Logger logger = LogManager.getLogger(DriverEscape.class);
 	public void setMode(Mode mode) {
 		this.mode = mode;
 	}
+	
 	public boolean getConfirmValueXml() {
 		return confirmValueXml;
 	}
@@ -89,6 +90,16 @@ final static Logger logger = LogManager.getLogger(DriverEscape.class);
 	
 	public void setDocumentBuilder(DocumentBuilder documentBuilder) {
 		this.documentBuilder = documentBuilder;
+	}
+	
+	//Constructor
+	public DriverEscape() {
+		try {
+			xmlFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		start();
 	}
 	
 	private void xmlFile(){
@@ -165,15 +176,4 @@ final static Logger logger = LogManager.getLogger(DriverEscape.class);
 		getMode().getChoiceGameMode();
 		getMode().getScanClosed();	
 	}
-	
-	public static void main(String[] args) {
-		DriverEscape driverEscape = new DriverEscape();
-		try {
-			driverEscape.xmlFile();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		driverEscape.start();
-	}
-	
 }

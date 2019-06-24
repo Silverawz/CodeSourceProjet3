@@ -7,14 +7,14 @@ import org.apache.logging.log4j.Logger;
 
 public class Defenseur {
 
-private ArrayList <Integer> playerCombinaison = new ArrayList <Integer>(); //computer answer with number(s)
-private ArrayList <String> playerAnswer = new ArrayList <String>(); //player proposal for computer
-private ArrayList <Integer> computerNumber = new ArrayList <Integer>(); //computer answer with number(s)
-private boolean win = false; //victory condition
-private int tryNumber; private int combinaisonNumberofNumber; //setting with xml
-private boolean verificationNumberChoosedConfirmed = false;
-private boolean verificationOperationChoosedConfirmed = false;
-final static Logger logger = LogManager.getLogger(Defenseur.class);
+	private ArrayList <Integer> playerCombinaison = new ArrayList <Integer>(); //computer answer with number(s)
+	private ArrayList <String> playerAnswer = new ArrayList <String>(); //player proposal for computer
+	private ArrayList <Integer> computerNumber = new ArrayList <Integer>(); //computer answer with number(s)
+	private boolean win = false; //victory condition
+	private int tryNumber; private int combinaisonNumberofNumber; //setting with xml
+	private boolean verificationNumberChoosedConfirmed = false;
+	private boolean verificationOperationChoosedConfirmed = false;
+	final static Logger logger = LogManager.getLogger(Defenseur.class);
 
 	public int getTryNumber() {
 		return tryNumber;

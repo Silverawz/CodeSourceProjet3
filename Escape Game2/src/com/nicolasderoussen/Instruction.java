@@ -2,8 +2,8 @@ package com.nicolasderoussen;
 
 
 public class Instruction {
-	private int combinaisonNumberofNumber;
 	
+	private int combinaisonNumberofNumber;
 	
 	public int getCombinaisonNumberofNumber() {
 		return combinaisonNumberofNumber;

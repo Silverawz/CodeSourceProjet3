@@ -8,17 +8,17 @@ import org.apache.logging.log4j.Logger;
 
 public class Mode {
 
-final private char REPLAY_ACTUAL_GAME_MODE = '1', GO_TO_MAIN_MENU = '2';
-final private char CHALLENGER = '1', DEFENSEUR = '2', DUEL = '3', EXIT = '4';
-private Challenger challenger; private Defenseur defenseur; private Instruction instruction; 
-private Scanner scanner;
-private int tryNumber; // number of try
-private int modeDeJeuActuel; // game mode (1 = challenger, 2 = defenseur, 3 = duel)
-private boolean activationEssai = false; // if try are enable = true, if not = false
-private boolean onlyOnce = true; // for third mode (duel) not repeating the first explanation
-private int devModeActivated = 0; // 0 = off, 1 = on
-private int combinaisonNumber; // setting with xml
-final static Logger logger = LogManager.getLogger(Mode.class);
+	final private char REPLAY_ACTUAL_GAME_MODE = '1', GO_TO_MAIN_MENU = '2';
+	final private char CHALLENGER = '1', DEFENSEUR = '2', DUEL = '3', EXIT = '4';
+	private Challenger challenger; private Defenseur defenseur; private Instruction instruction; 
+	private Scanner scanner;
+	private int tryNumber; // number of try
+	private int modeDeJeuActuel; // game mode (1 = challenger, 2 = defenseur, 3 = duel)
+	private boolean activationEssai = false; // if try are enable = true, if not = false
+	private boolean onlyOnce = true; // for third mode (duel) not repeating the first explanation
+	private int devModeActivated = 0; // 0 = off, 1 = on
+	private int combinaisonNumber; // setting with xml
+	final static Logger logger = LogManager.getLogger(Mode.class);
 
 	public int getDevModeActivated() {
 		return devModeActivated;
@@ -67,7 +67,6 @@ final static Logger logger = LogManager.getLogger(Mode.class);
 	public void setCombinaisonNumber(int combinaisonNumber) {
 		this.combinaisonNumber = combinaisonNumber;
 	}
-
 
 	//constructor without parameter = infinite try
 	public Mode() {

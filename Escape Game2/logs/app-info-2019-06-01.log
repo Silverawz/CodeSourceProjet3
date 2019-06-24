@@ -1,8 +1,4 @@
-[INFO ] 2019-06-19 16:01:11.149 [main] DriverEscape - File xml loaded
-[INFO ] 2019-06-19 16:01:11.156 [main] DriverEscape - DocumentBuilder complete
-[INFO ] 2019-06-19 16:01:11.157 [main] DriverEscape - Parsing of the XML file complete
-[INFO ] 2019-06-19 16:01:11.308 [main] DriverEscape - Sleep program 0.15sec
-[INFO ] 2019-06-19 16:01:16.270 [main] Mode - Input is not 1 or 2
-[INFO ] 2019-06-19 16:01:17.520 [main] Mode - Input is not 1 or 2
-[INFO ] 2019-06-19 16:01:19.621 [main] Mode - Input is not 1 or 2
-[INFO ] 2019-06-19 16:01:20.091 [main] Mode - Input is not 1 or 2
+[INFO ] 2019-06-24 14:57:28.161 [main] DriverEscape - File xml loaded
+[INFO ] 2019-06-24 14:57:28.165 [main] DriverEscape - DocumentBuilder complete
+[INFO ] 2019-06-24 14:57:28.166 [main] DriverEscape - Parsing of the XML file complete
+[INFO ] 2019-06-24 14:57:28.317 [main] DriverEscape - Sleep program 0.15sec
